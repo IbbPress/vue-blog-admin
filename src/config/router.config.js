@@ -13,6 +13,35 @@ export const asyncRouterMap = [
     children: [
       // dashboard
       {
+        path: '/dashboard2',
+        name: 'dashboard2',
+        redirect: '/dashboard2/workplace',
+        component: PageView,
+        meta: { title: '总览', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
+        children: [
+          {
+            path: '/dashboard2/workplace',
+            name: 'Workplace',
+            component: () => import('@/views/dashboard2/Workplace'),
+            meta: { title: '工作台', keepAlive: true, permission: [ 'dashboard' ] }
+          },
+          {
+            path: '/dashboard2/blog-list',
+            name: 'blog-list',
+            component: () => import('@/views/dashboard2/BlogList'),
+            meta: { title: '博客列表', keepAlive: false, permission: [ 'dashboard' ] }
+          },
+          {
+            path: '/dashboard2/test-work',
+            name: 'TestWork',
+            component: () => import('@/views/dashboard2/BlogEdit'),
+            meta: { title: '新建博客', keepAlive: true, permission: [ 'dashboard' ] }
+          }
+        ]
+      },
+
+      // dashboard
+      {
         path: '/dashboard',
         name: 'dashboard',
         redirect: '/dashboard/workplace',
