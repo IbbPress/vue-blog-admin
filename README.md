@@ -9,13 +9,13 @@
 + @vue/cli ~3
 + "vue@^2.6.10`
 + "vue-router@^3.1.2": 路由
-- [ant-design-vue](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 实现
++ [ant-design-vue](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 实现
 + `axios@^0.19.0`: 网络请求工具库
 + `mavon-editor@^2.7.7`: Markdown 编辑器
 + `moment@^2.24.0`：时间处理工具库
-- [vue-cropper](https://github.com/xyxiao001/vue-cropper) - 头像裁剪组件
-- [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
-- [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
++ [vue-cropper](https://github.com/xyxiao001/vue-cropper) - 头像裁剪组件
++ [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
++ [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
 
 
 ## 项目下载和运行
@@ -57,6 +57,6 @@ Modern browsers and IE10.
 
 
 
+## 其他说明
 
-其他说明
-----
+ 本项目对应 Server 端地址：https://github.com/IbbPress/nodejs-blog-server
