@@ -62,8 +62,10 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="dashed" shape="circle" icon="reload" style="position: relative; top: 1px;" @click="$refs.table.refresh()"></a-button>
-      <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
+      <a-button icon="reload" style="position: relative; top: 1px;" @click="$refs.table.refresh()"></a-button>
+      <router-link :to="{ name: 'blog-new' }">
+        <a-button type="primary" icon="plus">新建</a-button>
+      </router-link>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
       <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
@@ -105,7 +107,9 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record)">编辑</a>
+          <router-link :to="{ name: 'blog-edit', query: { id: record.id } }">
+            <a>编辑</a>
+          </router-link>
           <a-divider type="vertical" />
           <a @click="handleSub(record)">删除</a>
           <a-divider type="vertical" />
@@ -171,17 +175,26 @@ export default {
           dataIndex: 'title'
         },
         {
-          title: '摘要',
-          dataIndex: 'summary',
+          title: '内容',
+          dataIndex: 'content',
           scopedSlots: { customRender: 'description' }
         },
         {
-          title: '阅读量',
-          dataIndex: 'view_count',
-          sorter: true,
-          needTotal: true,
-          customRender: (text) => text + ' 次'
+          title: '作者',
+          dataIndex: 'author'
         },
+        // {
+        //   title: '摘要',
+        //   dataIndex: 'summary',
+        //   scopedSlots: { customRender: 'description' }
+        // },
+        // {
+        //   title: '阅读量',
+        //   dataIndex: 'view_count',
+        //   sorter: true,
+        //   needTotal: true,
+        //   customRender: (text) => text + ' 次'
+        // },
         // {
         //   title: '状态',
         //   dataIndex: 'status',
@@ -189,15 +202,15 @@ export default {
         // },
         {
           title: '创建时间',
-          dataIndex: 'create_time',
+          dataIndex: 'createAt',
           sorter: true,
-          customRender: (text) => moment(text).format('YYYY-MM-DD hh:mm:ss a')
+          customRender: (value) => this.formatTime(value)
         },
         {
           title: '更新时间',
-          dataIndex: 'update_time',
+          dataIndex: 'updateAt',
           sorter: true,
-          customRender: (text) => moment(text).format('YYYY-MM-DD hh:mm:ss a')
+          customRender: (value) => this.formatTime(value)
         },
         {
           title: '操作',
@@ -247,6 +260,12 @@ export default {
     getBlogList({ t: new Date() })
   },
   methods: {
+    formatTime (value) {
+      if (!value) {
+        return '-'
+      }
+      return moment(parseInt(value)).format('YYYY-MM-DD hh:mm:ss a')
+    },
     tableOption () {
       if (!this.optionAlertShow) {
         this.options = {

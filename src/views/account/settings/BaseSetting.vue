@@ -2,26 +2,57 @@
   <div class="account-settings-info-view">
     <a-row :gutter="16">
       <a-col :md="24" :lg="16">
-
-        <a-form layout="vertical">
+        <a-form layout="vertical" :form="form">
           <a-form-item
             label="昵称"
           >
-            <a-input placeholder="给自己起个名字" />
+            <a-input
+              v-decorator="[
+                'username',
+                {
+                  initialValue: formValues.username,
+                  rules: [
+                    { required: true, message: '请输入名字' }
+                  ]
+                }
+              ]"
+              placeholder="给自己起个名字" />
           </a-form-item>
           <a-form-item
-            label="Bio"
+            label="个人说明"
           >
-            <a-textarea rows="4" placeholder="You are not alone."/>
+            <a-textarea
+              rows="4"
+              v-decorator="[
+                'desc',
+                {
+                  initialValue: formValues.desc,
+                  rules: [
+                    { required: true, message: '请介绍一下自己吧' }
+                  ]
+                }
+              ]"
+              placeholder="请介绍一下自己吧"/>
           </a-form-item>
 
           <a-form-item
             label="电子邮件"
             :required="false"
           >
-            <a-input placeholder="exp@admin.com"/>
+            <a-input
+              placeholder="exp@admin.com"
+              v-decorator="[
+                'email',
+                {
+                  initialValue: formValues.email,
+                  rules: [
+                    { required: true, message: '请填写邮箱' }
+                  ]
+                }
+              ]"
+            />
           </a-form-item>
-          <a-form-item
+          <!-- <a-form-item
             label="加密方式"
             :required="false"
           >
@@ -42,11 +73,11 @@
             :required="false"
           >
             <a-input placeholder="密码"/>
-          </a-form-item>
+          </a-form-item> -->
 
           <a-form-item>
-            <a-button type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">保存</a-button>
+            <a-button type="primary" @click="validateFields">提交</a-button>
+            <!-- <a-button style="margin-left: 8px">保存</a-button> -->
           </a-form-item>
         </a-form>
 
@@ -70,13 +101,14 @@
 
 <script>
 import AvatarModal from './AvatarModal'
-
+import { getUserInfo, uploadUserInfo } from '@/api/user'
 export default {
   components: {
     AvatarModal
   },
   data () {
     return {
+      form: this.$form.createForm(this),
       // cropper
       preview: {},
       option: {
@@ -93,12 +125,40 @@ export default {
         // 开启宽度和高度比例
         fixed: true,
         fixedNumber: [1, 1]
-      }
+      },
+      formValues: {}
     }
+  },
+  created () {
+    this.fetchUserInfo()
   },
   methods: {
     setavatar (url) {
       this.option.img = url
+    },
+    validateFields (e) {
+      e.preventDefault()
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          // eslint-disable-next-line no-console
+          // console.log('Received values of form: ', values)
+          this.handleSubmit(Object.assign({
+            ...values,
+            avatar: this.option.img
+          }))
+        }
+      })
+    },
+    async handleSubmit (values) {
+      const resp = await uploadUserInfo(1, values)
+      console.log('Received values of form: ', values)
+      console.log(resp)
+    },
+    async fetchUserInfo () {
+      const resp = await getUserInfo(1)
+      console.log(resp)
+      this.option.img = resp.data.avatar
+      Object.assign(this.formValues, resp.data)
     }
   }
 }
