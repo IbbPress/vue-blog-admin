@@ -7,12 +7,29 @@
             v-bind="formLayout"
           >
             <a-input
+              @change="onTitleChange"
               v-decorator="[
                 'title',
                 {
                   initialValue: formValues.title,
                   rules: [
                     { required: true, message: '请输入标题' }
+                  ]
+                }
+              ]"
+              placeholder="在此输入标题" />
+          </a-form-item>
+          <a-form-item
+            v-bind="formLayout"
+            :extra="extra"
+          >
+            <a-input
+              v-decorator="[
+                'pinged',
+                {
+                  initialValue: formValues.pinged,
+                  rules: [
+                    { required: true, message: '链接' }
                   ]
                 }
               ]"
@@ -47,6 +64,7 @@
 </template>
 
 <script>
+import pinyin from 'pinyin'
 import { createBlog, getBlog, updateBlog } from '@/api/blog'
 import { mavonEditor } from 'mavon-editor'
 import UploadFile from './UploadFile'
@@ -75,9 +93,16 @@ export default {
       },
       formValues: {
         title: '',
-        content: ''
+        content: '',
+        pinged: ''
       }
 
+    }
+  },
+  computed: {
+    extra () {
+      const pinged = this.formValues.pinged
+      return pinged && `发布后，文本链接是：https://example.com/${pinged}.html`
     }
   },
   created () {
@@ -116,14 +141,27 @@ export default {
       }
       this.$message.success('保存成功')
       // eslint-disable-next-line no-console
-      console.log(resp)
+      this.id = resp.data.id
+      const { name } = this.$route
+      this.$router.push({ name, query: { id: this.id } })
     },
     async fetchPost (id) {
-      const { data: { title, content } } = await getBlog(id)
+      const { data: { title, content, pinged } } = await getBlog(id)
       Object.assign(this.formValues, {
         title, content
       })
+      !pinged && this.transToPinyin(title)
       // eslint-disable-next-line no-console
+    },
+    onTitleChange (e) {
+      const value = e.target.value
+      this.transToPinyin(value)
+    },
+    transToPinyin (value) {
+      // 标点符号是否要处理
+      this.formValues.pinged = pinyin(value, {
+        style: pinyin.STYLE_NORMAL
+      }).join('-')
     }
   }
 }
