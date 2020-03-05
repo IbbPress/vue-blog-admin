@@ -264,7 +264,7 @@ export default {
       if (!value) {
         return '-'
       }
-      return moment(parseInt(value)).format('YYYY-MM-DD hh:mm:ss a')
+      return moment(parseInt(value)).format('YYYY-MM-DD a hh:mm:ss')
     },
     tableOption () {
       if (!this.optionAlertShow) {

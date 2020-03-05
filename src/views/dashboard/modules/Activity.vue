@@ -32,13 +32,16 @@ export default {
   },
   filters: {
     formatTime (value) {
-      return moment(parseInt(value)).format('YYYY-MM-DD hh:mm:ss a')
+      return moment(parseInt(value)).format('YYYY-MM-DD a hh:mm:ss')
     }
   },
   methods: {
     async fetch () {
       this.loading = true
-      const resp = await getBlogList()
+      const resp = await getBlogList({
+        pageSize: 5,
+        pageNo: 1
+      })
       this.loading = false
       this.list = resp.data
     }
