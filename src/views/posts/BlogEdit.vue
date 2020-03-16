@@ -36,7 +36,7 @@
               placeholder="在此输入标题" />
           </a-form-item>
           <a-form-item>
-            <mavon-editor v-model="formValues.content" />
+            <mavon-editor ref="editor" v-model="formValues.content" @imgAdd="$imgAdd" />
           </a-form-item>
           <a-form-item
             v-bind="formLayout"
@@ -95,8 +95,8 @@ export default {
         title: '',
         content: '',
         pinged: ''
-      }
-
+      },
+      action: '/upload'
     }
   },
   computed: {
@@ -127,7 +127,8 @@ export default {
         }
         this.handleSubmit(Object.assign({
           ...values,
-          content: this.formValues.content
+          content: this.formValues.content,
+          contentHtml: this.$refs.editor.d_render
         }))
       })
     },
@@ -162,6 +163,20 @@ export default {
       this.formValues.pinged = pinyin(value, {
         style: pinyin.STYLE_NORMAL
       }).join('-')
+    },
+    // 绑定@imgAdd event
+    $imgAdd (pos, $file) {
+      // 第一步.将图片上传到服务器.
+      var formdata = new FormData()
+      formdata.append('file', $file)
+      this.$http({
+        url: this.action,
+        method: 'post',
+        data: formdata,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then((resp) => {
+        this.$refs.editor.$img2Url(pos, resp.url)
+      })
     }
   }
 }
