@@ -1,25 +1,32 @@
 <template>
-  <a-card :body-style="{padding: '24px 32px'}" :bordered="false">
-    <a-row :gutter="16">
-      <a-col :span="20">
-        <a-form :form="form">
-          <a-form-item
-            v-bind="formLayout"
-          >
-            <a-input
-              @change="onTitleChange"
-              v-decorator="[
-                'title',
-                {
-                  initialValue: formValues.title,
-                  rules: [
-                    { required: true, message: '请输入标题' }
-                  ]
-                }
-              ]"
-              placeholder="在此输入标题" />
+  <a-card :body-style="{padding: '24px 32px'}" :bordered="false" style="display: flex; min-height: 100%;">
+    <a-row :gutter="16" style="min-height: 100%; height: 100%;">
+      <a-col :span="24" style="min-height: 100%; height: 100%;">
+        <a-form :form="form" style="display: flex; flex-direction: column; height: 100%;">
+          <a-form-item v-bind="formLayout">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="padding-right: 20px; flex-grow: 1;">
+                <a-input
+                  @change="onTitleChange"
+                  v-decorator="[
+                    'title',
+                    {
+                      initialValue: formValues.title,
+                      rules: [
+                        { required: true, message: '请输入标题' }
+                      ]
+                    }
+                  ]"
+                  placeholder="在此输入标题" />
+              </div>
+              <div style="display: inline-flex;">
+                <a-button type="primary" @click="validateFields">提交</a-button>
+                <a-button style="margin-left: 8px">保存</a-button>
+                <a-button style="margin-left: 8px" icon="fullscreen"></a-button>
+              </div>
+            </div>
           </a-form-item>
-          <a-form-item
+          <!-- <a-form-item
             v-bind="formLayout"
             :extra="extra"
           >
@@ -34,11 +41,11 @@
                 }
               ]"
               placeholder="在此输入标题" />
+          </a-form-item> -->
+          <a-form-item style="flex: 1 1 auto;">
+            <mavon-editor ref="editor" v-model="formValues.content" @imgAdd="$imgAdd" style="z-index: 900;" />
           </a-form-item>
-          <a-form-item>
-            <mavon-editor ref="editor" v-model="formValues.content" @imgAdd="$imgAdd" />
-          </a-form-item>
-          <a-form-item
+          <!-- <a-form-item
             v-bind="formLayout"
           >
             <a-textarea
@@ -48,17 +55,16 @@
               placeholder="摘要"
               :autosize="{ minRows: 2, maxRows: 6 }"
             />
-          </a-form-item>
+          </a-form-item> -->
         </a-form>
       </a-col>
-      <a-col :span="4">
+      <!-- <a-col :span="4">
         <div>
           <a-button type="primary" @click="validateFields">提交</a-button>
           <a-button style="margin-left: 8px">保存</a-button>
         </div>
         <br />
-        <upload-file />
-      </a-col>
+      </a-col> -->
     </a-row>
   </a-card>
 </template>
@@ -67,11 +73,10 @@
 import pinyin from 'pinyin'
 import { createBlog, getBlog, updateBlog } from '@/api/blog'
 import { mavonEditor } from 'mavon-editor'
-import UploadFile from './UploadFile'
 require('mavon-editor/dist/css/index.css')
 export default {
   name: 'BaseForm',
-  components: { mavonEditor, UploadFile },
+  components: { mavonEditor },
   data () {
     return {
       id: undefined,
@@ -134,17 +139,18 @@ export default {
     },
     // handler
     async handleSubmit (values) {
-      let resp
       if (this.id) {
-        resp = await updateBlog(this.id, values)
+        await updateBlog(this.id, values)
+        this.$message.success('更新成功成功')
       } else {
-        resp = await createBlog(values)
+        await createBlog(values)
+        this.$message.success('保存成功')
       }
-      this.$message.success('保存成功')
+      this.$router.push({ name: 'blog-list' })
       // eslint-disable-next-line no-console
-      this.id = resp.data.id
-      const { name } = this.$route
-      this.$router.push({ name, query: { id: this.id } })
+      // this.id = resp.data.id
+      // const { name } = this.$route
+      // this.$router.push({ name, query: { id: this.id } })
     },
     async fetchPost (id) {
       const { data: { title, content, pinged } } = await getBlog(id)
@@ -181,3 +187,17 @@ export default {
   }
 }
 </script>
+
+<style>
+.ant-card-body {
+  flex-grow: 1;
+}
+
+.ant-form-item-control-wrapper,
+.ant-form-item-control,
+.ant-form-item-children,
+.v-note-wrapper
+{
+  height: 100%;
+}
+</style>
