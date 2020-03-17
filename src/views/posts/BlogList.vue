@@ -1,6 +1,6 @@
 <template>
   <a-card :bordered="false">
-    <div class="table-page-search-wrapper">
+    <!-- <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
@@ -59,11 +59,11 @@
           </a-col>
         </a-row>
       </a-form>
-    </div>
+    </div> -->
 
     <div class="table-operator">
       <a-button icon="reload" style="position: relative; top: 1px;" @click="$refs.table.refresh()"></a-button>
-      <router-link :to="{ name: 'blog-new' }">
+      <router-link :to="{ name: 'blog-edit' }">
         <a-button type="primary" icon="plus">新建</a-button>
       </router-link>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
@@ -89,6 +89,11 @@
       :rowSelection="options.rowSelection"
       showPagination="auto"
     >
+      <span slot="titletitle" slot-scope="text, record">
+        <router-link :to="{ name: 'edit', query: { id: record.id } }">
+          {{ text }}
+        </router-link>
+      </span>
       <span slot="serial" slot-scope="text, record, index">
         {{ index + 1 }}
       </span>
@@ -172,17 +177,18 @@ export default {
         },
         {
           title: '标题',
-          dataIndex: 'title'
+          dataIndex: 'title',
+          scopedSlots: { customRender: 'titletitle' }
         },
-        {
-          title: '内容',
-          dataIndex: 'content',
-          scopedSlots: { customRender: 'description' }
-        },
-        {
-          title: '作者',
-          dataIndex: 'author'
-        },
+        // {
+        //   title: '内容',
+        //   dataIndex: 'content',
+        //   scopedSlots: { customRender: 'description' }
+        // },
+        // {
+        //   title: '作者',
+        //   dataIndex: 'author'
+        // },
         // {
         //   title: '摘要',
         //   dataIndex: 'summary',
