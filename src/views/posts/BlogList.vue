@@ -221,14 +221,13 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log('loadData.parameter', parameter)
         return getBlogList(Object.assign(parameter, this.queryParam))
           .then(res => {
             return {
               pageSize: 10,
-              pageNo: 1,
-              totalCount: res.data.length,
-              totalPage: res.data.length,
+              pageNo: res.pageNo,
+              totalCount: res.count,
+              totalPage: Math.ceil(res.count / res.pageSize),
               data: res.data
             }
           })
