@@ -1,6 +1,7 @@
 <template>
   <div class="user-wrapper">
     <div class="content-box">
+      <router-link :to="{ name: 'edit' }" style="margin-right: 8px;">新建文章</router-link>
       <a href="https://pro.loacg.com/docs/getting-started" target="_blank">
         <span class="action">
           <a-icon type="question-circle-o"></a-icon>

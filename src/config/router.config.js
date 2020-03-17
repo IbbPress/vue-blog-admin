@@ -19,6 +19,13 @@ export const asyncRouterMap = [
         meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: [ 'dashboard' ] }
       },
       {
+        path: '/edit',
+        name: 'edit',
+        hidden: true,
+        component: () => import('@/views/posts/BlogEdit'),
+        meta: { title: '写文章', keepAlive: true, permission: [ 'dashboard' ] }
+      },
+      {
         path: '/posts',
         name: 'posts',
         redirect: '/posts/list',
@@ -31,12 +38,12 @@ export const asyncRouterMap = [
             component: () => import('@/views/posts/BlogList'),
             meta: { title: '所有文章', keepAlive: false, permission: [ 'dashboard' ] }
           },
-          {
-            path: '/posts/edit',
-            name: 'blog-edit',
-            component: () => import('@/views/posts/BlogEdit'),
-            meta: { title: '写文章', keepAlive: true, permission: [ 'dashboard' ] }
-          },
+          // {
+          //   path: '/posts/edit',
+          //   name: 'blog-edit',
+          //   component: () => import('@/views/posts/BlogEdit'),
+          //   meta: { title: '写文章', keepAlive: true, permission: [ 'dashboard' ] }
+          // },
           {
             path: '/posts/cate',
             name: 'blog-cate',
