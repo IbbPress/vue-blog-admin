@@ -7,23 +7,38 @@
     <div slot="extra">
       <a-row class="more-info">
         <a-col :span="6">
-          <router-link :to="{ name: 'blog-list' }">
-            <head-info title="文章" content="56" :center="false" :bordered="false"/>
-          </router-link>
+          <a-tooltip placement="top">
+            <template slot="title">
+              <span>您已经写了 56 篇文章，再接再厉！</span>
+            </template>
+            <div>
+              <router-link :to="{ name: 'blog-list' }">
+                <head-info style="text-align: center; padding: 0;" title="文章" content="56" :center="false" :bordered="false"/>
+              </router-link>
+            </div>
+          </a-tooltip>
+          <!-- <a-tooltip placement="top">
+            <template slot="title">
+              <span>您已经写了 56 篇文章，再接再厉！</span>
+            </template>
+            <router-link :to="{ name: 'blog-list' }">
+              <head-info style="text-align: center; padding: 0;" title="文章" content="56" :center="false" :bordered="false"/>
+            </router-link>
+          </a-tooltip> -->
         </a-col>
         <a-col :span="6">
           <router-link :to="{ name: 'blog-cate' }">
-            <head-info title="目录" content="24" :center="false" :bordered="false"/>
+            <head-info style="text-align: center; padding: 0;" title="目录" content="24" :center="false" :bordered="false"/>
           </router-link>
         </a-col>
         <a-col :span="6">
           <router-link :to="{ name: 'blog-tags' }">
-            <head-info title="标签" content="2,223" :center="false" />
+            <head-info style="text-align: center; padding: 0;" title="标签" content="2,223" :center="false" />
           </router-link>
         </a-col>
         <a-col :span="6">
           <router-link :to="{ name: '' }">
-            <head-info title="评论" content="2,223" :center="false" />
+            <head-info style="text-align: center; padding: 0;" title="评论" content="2,223" :center="false" />
           </router-link>
         </a-col>
       </a-row>

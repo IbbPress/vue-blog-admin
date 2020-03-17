@@ -1,5 +1,8 @@
 <template>
   <a-card :loading="loading" title="动态" :bordered="false">
+    <router-link :to="{ name: 'edit' }" slot="extra">
+      <a-button icon="edit">再写一篇</a-button>
+    </router-link>
     <h4>最近发布</h4>
     <a-list>
       <a-list-item :key="index" v-for="(item, index) in list">
