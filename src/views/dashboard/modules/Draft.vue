@@ -37,7 +37,7 @@
             <a-list-item-meta>
               <div slot="description">{{ item.createAt | formatTime }}</div>
               <div slot="title">
-                <router-link :to="{ name: 'blog-edit', query: { id: item.id } }">
+                <router-link :to="{ name: 'edit', query: { id: item.id } }">
                   {{ item.title }}
                 </router-link>
               </div>

@@ -63,7 +63,7 @@
 
     <div class="table-operator">
       <a-button icon="reload" style="position: relative; top: 1px;" @click="$refs.table.refresh()"></a-button>
-      <router-link :to="{ name: 'blog-edit' }">
+      <router-link :to="{ name: 'edit' }">
         <a-button type="primary" icon="plus">新建</a-button>
       </router-link>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
@@ -112,7 +112,7 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <router-link :to="{ name: 'blog-edit', query: { id: record.id } }">
+          <router-link :to="{ name: 'edit', query: { id: record.id } }">
             <a>编辑</a>
           </router-link>
           <a-divider type="vertical" />
