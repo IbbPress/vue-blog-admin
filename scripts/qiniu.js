@@ -22,9 +22,8 @@ const options = {
 const qiniu_config = {
   accessKey: process.env.QINIU_accessKey,
   secretKey: process.env.QINIU_secretKey,
-  bucket: process.env.QINIU_bucket || 'static001',
-  domain: process.env.QINIU_domain || 'http://static001.wencaizhang.com',
-  zone: process.env.QINIU_zone || 'Zone_z0'
+  bucket: 'static001',
+  zone: 'Zone_z0'
 }
 
 const mac = new qiniu.auth.digest.Mac(qiniu_config.accessKey, qiniu_config.secretKey)
@@ -75,8 +74,6 @@ function getFileKey (pre, file) {
 
 (async () => {
   console.time('上传文件到cdn')
-  console.log(qiniu_config.accessKey.length);
-  console.log(qiniu_config.secretKey.length);
   await uploadFileCDN(files)
   console.timeEnd('上传文件到cdn')
 })()
