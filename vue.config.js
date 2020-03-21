@@ -7,6 +7,7 @@ function resolve (dir) {
 }
 
 const isProd = process.env.NODE_ENV === 'production'
+const cdnDomian = process.env.NODE_ENV.QINIU_domain || '/'
 
 const assetsCDN = {
   // webpack build externals
@@ -28,6 +29,7 @@ const assetsCDN = {
 
 // vue.config.js
 const vueConfig = {
+  publicPath: isProd ? cdnDomian : '/',
   configureWebpack: {
     // webpack plugins
     plugins: [
@@ -90,7 +92,7 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/api': {
-        target: 'http://localhost:3000/',
+        target: process.env.proxy_target || 'http://localhost:3000/',
         ws: false,
         changeOrigin: true
       }
