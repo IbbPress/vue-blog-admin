@@ -22,9 +22,9 @@ const options = {
 const qiniu_config = {
   accessKey: process.env.QINIU_accessKey,
   secretKey: process.env.QINIU_secretKey,
-  bucket: process.env.QINIU_bucket,
-  domain: process.env.QINIU_domain,
-  zone: process.env.QINIU_zone
+  bucket: process.env.QINIU_bucket || 'static001',
+  domain: process.env.QINIU_domain || 'http://static001.wencaizhang.com',
+  zone: process.env.QINIU_zone || 'Zone_z0'
 }
 
 const mac = new qiniu.auth.digest.Mac(qiniu_config.accessKey, qiniu_config.secretKey)

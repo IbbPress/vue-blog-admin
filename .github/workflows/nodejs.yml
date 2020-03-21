@@ -19,6 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: npm run build --if-present
+    - run: export QINIU_accessKey=${{ secrets.QINIU_accessKey }} QINIU_secretKey=${{ secrets.QINIU_secretKey }}  && npm run cdn 
     - run: npm test
       env:
         CI: true
