@@ -75,7 +75,8 @@ function getFileKey (pre, file) {
 
 (async () => {
   console.time('上传文件到cdn')
-  console.log(qiniu_config);
+  console.log(qiniu_config.accessKey.length);
+  console.log(qiniu_config.secretKey.length);
   await uploadFileCDN(files)
   console.timeEnd('上传文件到cdn')
 })()
