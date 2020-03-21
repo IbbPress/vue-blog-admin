@@ -15,14 +15,14 @@ export const asyncRouterMap = [
       {
         path: '/dashboard',
         name: 'dashboard',
-        component: () => import('@/views/dashboard/Home'),
+        component: () => import(/* webpackChunkName: "posts" */ '@/views/dashboard/Home'),
         meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: [ 'dashboard' ] }
       },
       {
         path: '/edit',
         name: 'edit',
         hidden: true,
-        component: () => import('@/views/posts/BlogEdit'),
+        component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/BlogEdit'),
         meta: { title: '写文章', keepAlive: true, permission: [ 'dashboard' ] }
       },
       {
@@ -35,7 +35,7 @@ export const asyncRouterMap = [
           {
             path: '/posts/list',
             name: 'blog-list',
-            component: () => import('@/views/posts/BlogList'),
+            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/BlogList'),
             meta: { title: '所有文章', keepAlive: false, permission: [ 'dashboard' ] }
           },
           // {
@@ -47,18 +47,23 @@ export const asyncRouterMap = [
           {
             path: '/posts/cate',
             name: 'blog-cate',
-            component: () => import('@/views/posts/Cate'),
+            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/Cate'),
             meta: { title: '分类目录', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
             path: '/posts/tags',
             name: 'blog-tags',
-            component: () => import('@/views/posts/Tags'),
+            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/Tags'),
             meta: { title: '标签', keepAlive: true, permission: [ 'dashboard' ] }
           }
         ]
       },
-
+      {
+        path: '/media',
+        name: 'media',
+        component: () => import(/* webpackChunkName: "posts" */ '@/views/media/Index'),
+        meta: { title: '媒体库', keepAlive: true, icon: 'camera', permission: [ 'dashboard' ] }
+      },
       // // dashboard
       // {
       //   path: '/dashboard',

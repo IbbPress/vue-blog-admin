@@ -62,7 +62,7 @@ export default {
   },
   data () {
     return {
-      action: '/upload',
+      action: '/media/upload',
       visible: false,
       id: null,
       confirmLoading: false,

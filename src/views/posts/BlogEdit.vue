@@ -43,7 +43,13 @@
               placeholder="在此输入标题" />
           </a-form-item> -->
           <a-form-item style="flex: 1 1 auto;">
-            <mavon-editor ref="editor" v-model="formValues.content" @imgAdd="$imgAdd" style="z-index: 900;" />
+            <mavon-editor
+              ref="editor"
+              v-model="formValues.content"
+              @imgAdd="$imgAdd"
+              @imgDel="$imgDel"
+              style="z-index: 900;"
+            />
           </a-form-item>
           <!-- <a-form-item
             v-bind="formLayout"
@@ -72,6 +78,7 @@
 <script>
 import pinyin from 'pinyin'
 import { createBlog, getBlog, updateBlog } from '@/api/blog'
+import { delMedia } from '@/api/media'
 import { mavonEditor } from 'mavon-editor'
 require('mavon-editor/dist/css/index.css')
 export default {
@@ -101,7 +108,8 @@ export default {
         content: '',
         pinged: ''
       },
-      action: '/upload'
+      uploadAction: '/media/upload',
+      fileList: {}
     }
   },
   computed: {
@@ -115,6 +123,12 @@ export default {
     if (id) {
       this.id = id
       this.fetchPost(id)
+    } else {
+      this.formValues = {
+        title: '',
+        content: '',
+        pinged: ''
+      }
     }
   },
   methods: {
@@ -141,7 +155,7 @@ export default {
     async handleSubmit (values) {
       if (this.id) {
         await updateBlog(this.id, values)
-        this.$message.success('更新成功成功')
+        this.$message.success('更新成功')
       } else {
         await createBlog(values)
         this.$message.success('保存成功')
@@ -176,13 +190,18 @@ export default {
       var formdata = new FormData()
       formdata.append('file', $file)
       this.$http({
-        url: this.action,
+        url: this.uploadAction,
         method: 'post',
         data: formdata,
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then((resp) => {
+        this.fileList[resp.url] = resp
         this.$refs.editor.$img2Url(pos, resp.url)
       })
+    },
+    async $imgDel (filename) {
+      const file = this.fileList[filename[0]]
+      await delMedia(file.id)
     }
   }
 }
