@@ -7,7 +7,7 @@ function resolve (dir) {
 }
 
 const isProd = process.env.NODE_ENV === 'production'
-const cdnDomian = process.env.NODE_ENV.QINIU_domain || '/'
+const cdnDomian = process.env.QINIU_domain || '/'
 
 const assetsCDN = {
   // webpack build externals

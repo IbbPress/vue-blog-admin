@@ -2,7 +2,7 @@ const qiniu = require('qiniu')
 const glob = require('glob')
 const mime = require('mime')
 const path = require('path')
-require('dotenv').config({ path: path.resolve(process.cwd(), '.env.local') })
+require('dotenv').config({ path: path.resolve(process.cwd(), '.env.production.local') })
 
 const isWindow = /^win/.test(process.platform)
 
