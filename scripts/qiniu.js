@@ -16,14 +16,14 @@ const files = glob.sync(
 )
 pre = pre.replace(/\\/g, '/')
 
-const options = {
-  scope: process.env.QINIU_bucket // 空间对象名称 
-}
 const qiniu_config = {
   accessKey: process.env.QINIU_accessKey,
   secretKey: process.env.QINIU_secretKey,
   bucket: 'static001',
   zone: 'Zone_z0'
+}
+const options = {
+  scope: qiniu_config.bucket // 空间对象名称 
 }
 
 const mac = new qiniu.auth.digest.Mac(qiniu_config.accessKey, qiniu_config.secretKey)
