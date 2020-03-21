@@ -67,17 +67,29 @@
         <a-button type="primary" icon="plus">新建</a-button>
       </router-link>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
-      <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
+      <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1"><a-icon type="delete" />删除</a-menu-item>
+          <a-menu-item key="1" @click="handleMultDelete"><a-icon type="delete" />删除</a-menu-item>
           <!-- lock | unlock -->
-          <a-menu-item key="2"><a-icon type="lock" />锁定</a-menu-item>
+          <a-menu-item key="2" @click="handleMultPublic"><a-icon type="file-done" />发布</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px">
           批量操作 <a-icon type="down" />
         </a-button>
       </a-dropdown>
     </div>
+
+    <a-modal
+      :title="modalTitle"
+      :visible="modalVisible"
+      @ok="handleModalOk"
+      :confirmLoading="modalConfirmLoading"
+      @cancel="modalVisible = false"
+    >
+      <div class="content">
+        <p v-for="item in selectedRows" :key="item.id">{{ item.title }}</p>
+      </div>
+    </a-modal>
 
     <s-table
       ref="table"
@@ -116,9 +128,26 @@
             <a>编辑</a>
           </router-link>
           <a-divider type="vertical" />
-          <a @click="handleSub(record)">删除</a>
-          <a-divider type="vertical" />
-          <a @click="handleSub(record)">发布</a>
+          <a-popconfirm
+            title="确定要删除吗？"
+            @confirm="handleDel(record)"
+            okText="Yes"
+            cancelText="No"
+          >
+            <a-icon slot="icon" type="question-circle-o" style="color: red" />
+            <a>删除</a>
+          </a-popconfirm>
+          <template v-if="!record.isPublic" >
+            <a-divider type="vertical" />
+            <a-popconfirm
+              title="确定要发布吗？"
+              @confirm="handlePublic(record)"
+              okText="Yes"
+              cancelText="No"
+            >
+              <a>发布</a>
+            </a-popconfirm>
+          </template>
         </template>
       </span>
     </s-table>
@@ -132,25 +161,16 @@ import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
 import StepByStepModal from './modules/StepByStepModal.vue'
 import CreateForm from './modules/CreateForm.vue'
-// import { getServiceList } from '@/api/manage'
-import { getBlogList } from '@/api/blog'
+import { getBlogList, delBlog, updateBlog } from '@/api/blog'
 
-const statusMap = {
+const publicMap = {
   0: {
     status: 'default',
-    text: '关闭'
+    text: '草稿'
   },
   1: {
-    status: 'processing',
-    text: '运行中'
-  },
-  2: {
     status: 'success',
-    text: '已上线'
-  },
-  3: {
-    status: 'error',
-    text: '异常'
+    text: '已发布'
   }
 }
 
@@ -201,11 +221,11 @@ export default {
         //   needTotal: true,
         //   customRender: (text) => text + ' 次'
         // },
-        // {
-        //   title: '状态',
-        //   dataIndex: 'status',
-        //   scopedSlots: { customRender: 'status' }
-        // },
+        {
+          title: '状态',
+          dataIndex: 'isPublic',
+          scopedSlots: { customRender: 'status' }
+        },
         {
           title: '创建时间',
           dataIndex: 'createAt',
@@ -249,15 +269,19 @@ export default {
           onChange: this.onSelectChange
         }
       },
-      optionAlertShow: false
+      optionAlertShow: false,
+
+      modalTitle: 'Title',
+      modalVisible: false,
+      modalConfirmLoading: false
     }
   },
   filters: {
     statusFilter (type) {
-      return statusMap[type].text
+      return publicMap[Number(type)].text
     },
     statusTypeFilter (type) {
-      return statusMap[type].status
+      return publicMap[Number(type)].status
     }
   },
   created () {
@@ -321,6 +345,29 @@ export default {
       this.queryParam = {
         date: moment(new Date())
       }
+    },
+    async handlePublic (record) {
+      await updateBlog(record.id, { isPublic: true })
+      this.$refs.table.refresh()
+    },
+    async handleDel (record) {
+      await delBlog(record.id)
+      this.$refs.table.refresh()
+    },
+    async handleMultDelete () {
+      this.modalVisible = true
+      this.modalType = 'delete'
+      this.modalTitle = '确定删除下列文章吗？'
+      console.log(this.selectedRowKeys)
+    },
+    async handleMultPublic () {
+      this.modalVisible = true
+      this.modalType = 'public'
+      this.modalTitle = '确定发布下列文章吗？'
+      console.log(this.selectedRows)
+    },
+    handleModalOk () {
+      this.modalVisible = false
     }
   }
 }

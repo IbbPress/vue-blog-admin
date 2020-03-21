@@ -29,6 +29,12 @@ export function getBlog (id) {
     method: 'get'
   })
 }
+export function delBlog (id) {
+  return axios({
+    url: `/posts/${id}`,
+    method: 'delete'
+  })
+}
 export function updateBlog (id, payload) {
   return axios({
     url: `/posts/${id}`,
