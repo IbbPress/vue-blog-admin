@@ -22,7 +22,7 @@ export const asyncRouterMap = [
         path: '/edit',
         name: 'edit',
         hidden: true,
-        component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/BlogEdit'),
+        component: () => import(/* webpackChunkName: "editor" */ '@/views/posts/BlogEdit'),
         meta: { title: '写文章', keepAlive: true, permission: [ 'dashboard' ] }
       },
       {
@@ -270,13 +270,13 @@ export const asyncRouterMap = [
           {
             path: '/account/center',
             name: 'center',
-            component: () => import('@/views/account/center/Index'),
+            component: () => import(/* webpackChunkName: "account" */ '@/views/account/center/Index'),
             meta: { title: '个人中心', keepAlive: true, permission: [ 'user' ] }
           },
           {
             path: '/account/settings',
             name: 'settings',
-            component: () => import('@/views/account/settings/Index'),
+            component: () => import(/* webpackChunkName: "account" */ '@/views/account/settings/Index'),
             meta: { title: '个人设置', hideHeader: true, permission: [ 'user' ] },
             redirect: '/account/settings/base',
             hideChildrenInMenu: true,
@@ -284,31 +284,31 @@ export const asyncRouterMap = [
               {
                 path: '/account/settings/base',
                 name: 'BaseSettings',
-                component: () => import('@/views/account/settings/BaseSetting'),
+                component: () => import(/* webpackChunkName: "account" */ '@/views/account/settings/BaseSetting'),
                 meta: { title: '基本设置', permission: [ 'user' ] }
               },
               {
                 path: '/account/settings/security',
                 name: 'SecuritySettings',
-                component: () => import('@/views/account/settings/Security'),
+                component: () => import(/* webpackChunkName: "account" */ '@/views/account/settings/Security'),
                 meta: { title: '安全设置', keepAlive: true, permission: [ 'user' ] }
               },
               {
                 path: '/account/settings/custom',
                 name: 'CustomSettings',
-                component: () => import('@/views/account/settings/Custom'),
+                component: () => import(/* webpackChunkName: "account" */ '@/views/account/settings/Custom'),
                 meta: { title: '个性化设置', keepAlive: true, permission: [ 'user' ] }
               },
               {
                 path: '/account/settings/binding',
                 name: 'BindingSettings',
-                component: () => import('@/views/account/settings/Binding'),
+                component: () => import(/* webpackChunkName: "account" */ '@/views/account/settings/Binding'),
                 meta: { title: '账户绑定', keepAlive: true, permission: [ 'user' ] }
               },
               {
                 path: '/account/settings/notification',
                 name: 'NotificationSettings',
-                component: () => import('@/views/account/settings/Notification'),
+                component: () => import(/* webpackChunkName: "account" */ '@/views/account/settings/Notification'),
                 meta: { title: '新消息通知', keepAlive: true, permission: [ 'user' ] }
               }
             ]
