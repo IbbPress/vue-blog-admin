@@ -7,7 +7,7 @@ function resolve (dir) {
 }
 
 const isProd = process.env.NODE_ENV === 'production'
-const cdnDomian = process.env.QINIU_domain || '/'
+const cdnDomian = process.env.QINIU_CDN ? process.env.QINIU_domain || '/' : '/'
 
 const assetsCDN = {
   // webpack build externals
@@ -31,6 +31,68 @@ const assetsCDN = {
 const vueConfig = {
   publicPath: isProd ? cdnDomian : '/',
   configureWebpack: {
+    optimization: {
+      splitChunks: {
+        // chunks: "initial"，"async"和"all"分别是：初始块，按需块或所有块；
+        chunks: 'async',
+        // （默认值：30000）块的最小大小
+        minSize: 30000,
+        // （默认值：0）块的最大大小
+        maxSize: 30000 * 100,
+        // （默认值：1）分割前共享模块的最小块数
+        minChunks: 1,
+        // （缺省值5）按需加载时的最大并行请求数
+        maxAsyncRequests: 8,
+        // （默认值3）入口点上的最大并行请求数
+        maxInitialRequests: 8,
+        // webpack 将使用块的起源和名称来生成名称: `vendors~main.js`,如项目与"~"冲突，则可通过此值修改，Eg: '-'
+        automaticNameDelimiter: '~',
+        // cacheGroups is an object where keys are the cache group names.
+        name: true,
+        cacheGroups: {
+          // 设置为 false 以禁用默认缓存组
+          // default: false,
+          antdv: {
+            name: 'chunk-antdv',
+            test: /[\\/]node_modules[\\/]ant-design-vue[\\/]/,
+            chunks: 'initial',
+            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+            priority: 0
+          },
+          antv: {
+            name: 'chunk-antv',
+            test: /[\\/]node_modules[\\/]@antv[\\/]/,
+            chunks: 'initial',
+            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+            priority: 0
+          },
+          antdicon: {
+            name: 'chunk-antdicon',
+            test: /[\\/]node_modules[\\/]@ant-design[\\/]/,
+            chunks: 'initial',
+            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+            priority: 0
+          },
+        }
+      //   minSize: 50000,
+      //   maxSize: 200000,
+      //   cacheGroups: {
+      //     vendors: {
+      //       name: 'chunk-vendors',
+      //       test: /[\\/]node_modules[\\/]/,
+      //       priority: -10,
+      //       chunks: 'all'
+      //     },
+      //     common: {
+      //       name: 'chunk-common',
+      //       minChunks: 2,
+      //       priority: -20,
+      //       chunks: 'all',
+      //       reuseExistingChunk: true
+      //     }
+      //   }
+      }
+    },
     // webpack plugins
     plugins: [
       // Ignore all locale files of moment.js
