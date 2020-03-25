@@ -118,20 +118,22 @@ export default {
       return pinged && `发布后，文本链接是：https://example.com/${pinged}.html`
     }
   },
-  created () {
-    const { id } = this.$route.query
-    if (id) {
-      this.id = id
-      this.fetchPost(id)
-    } else {
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.resetValues()
+      vm.fetchPost()
+    })
+  },
+  methods: {
+    resetValues () {
       this.formValues = {
         title: '',
         content: '',
         pinged: ''
       }
-    }
-  },
-  methods: {
+      this.form.resetFields()
+    },
+
     // handler
     validateFields (e) {
       e.preventDefault()
@@ -166,7 +168,10 @@ export default {
       // const { name } = this.$route
       // this.$router.push({ name, query: { id: this.id } })
     },
-    async fetchPost (id) {
+    async fetchPost () {
+      const { id } = this.$route.query
+      if (!id) { return }
+      this.id = id
       const { data: { title, content, pinged } } = await getBlog(id)
       Object.assign(this.formValues, {
         title, content
