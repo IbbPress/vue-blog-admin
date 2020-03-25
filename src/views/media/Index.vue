@@ -23,15 +23,23 @@
         :key="item.id"
         @click="showDrawer(index, item)"
       >
-        <img
-          v-if="isImg(item.name)"
-          :alt="item.name"
-          :src="item.url"
+        <!-- <a href="#" slot="extra">more</a> -->
+        <div
+          class="file-wrapper"
           slot="cover"
-        />
-        <div v-else>
-          {{ item.name }}
+        >
+          <img
+            v-if="isImg(item)"
+            :alt="item.originalname"
+            :src="item.url"
+          />
+          <div v-else>
+            {{ item.originalname }}
+          </div>
         </div>
+        <!-- <a-card-meta title="xxx">
+          <template slot="description">{{ item.originalname }}</template>
+        </a-card-meta> -->
       </a-card>
     </div>
 
@@ -61,13 +69,13 @@
               :key="item.id"
             >
               <img
-                v-if="isImg(item.name)"
-                :alt="item.name"
+                v-if="isImg(item)"
+                :alt="item.originalname"
                 :src="item.url"
                 slot="cover"
               />
               <div v-else>
-                {{ item.name }}
+                {{ item.originalname }} <span style="color: #999;font-size: 12px;">(此文件不支持预览)</span>
               </div>
             </div>
           </a-carousel>
@@ -77,7 +85,7 @@
             <span class="label">文件名</span>
           </a-col>
           <a-col :span="18">
-            {{ currImg.name }}
+            {{ currImg.originalname }}
           </a-col>
         </a-row>
         <a-row class="drawer-row" type="flex" align="top">
@@ -89,11 +97,17 @@
               <a-input readonly :value="currImg.url"/>
             </p>
             <p style="margin: 0; padding-left: 4px; font-size: 12px;">
-              <a :download="currImg.name" :href="currImg.url">下载</a>
+              <a :download="currImg.originalname" :href="currImg.url">下载</a>
               <span class="mx10" style="margin: 0 10px;">|</span>
-              <a>打开文件 URL</a>
+              <a :href="currImg.url" target="_blank">打开文件 URL</a>
               <span class="mx10" style="margin: 0 10px;">|</span>
-              <a>复制文件 URL</a>
+              <a
+                v-clipboard:copy="currImg.url"
+                v-clipboard:success="onCopy"
+                v-clipboard:error="onError"
+              >
+                复制文件 URL
+              </a>
             </p>
           </a-col>
         </a-row>
@@ -126,17 +140,20 @@ export default {
       currImg: null,
       drawerStyle: {
         'margin-top': '65px'
-      }
+      },
+      message: 'Copy These Text'
     }
   },
   created () {
     this.fetchData()
   },
   methods: {
-    isImg (name) {
-      console.log(name)
-      const imgTypeList = ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
-      return imgTypeList.some(type => name.includes(type))
+    isImg (item) {
+      // return true
+      return item.mimetype.includes('image')
+      // console.log(name)
+      // const imgTypeList = ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
+      // return imgTypeList.some(type => name.includes(type))
     },
     async fetchData () {
       const list = await getMediaList()
@@ -144,6 +161,10 @@ export default {
       this.list = list
     },
     showDrawer (index, item) {
+      // if (!this.isImg(item)) {
+      //   this.$message.info('此文件不支持预览')
+      //   return
+      // }
       this.currImg = item
       this.drawerVisible = true
       this.$nextTick(() => {
@@ -183,6 +204,12 @@ export default {
       )
       console.log('upload resp:', resp)
       this.$message.success('上传成功')
+    },
+    onCopy (e) {
+      this.$message.success('您已成功复制: ' + e.text)
+    },
+    onError (e) {
+      this.$message.error('复制失败')
     }
   }
 }
@@ -201,15 +228,25 @@ export default {
     flex-wrap: wrap;
 
     .img-card {
-      width: 240px;
-      height: 300px;
+      // width: 240px;
+      // height: 300px;
+      width: 200px;
+      height: 240px;
       margin: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
-      img {
-        width: auto;
-        max-width: 100%;
+
+      .file-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+          width: auto;
+          max-width: 100%;
+          max-height: 100%;
+        }
       }
     }
   }
