@@ -47,13 +47,13 @@ export const asyncRouterMap = [
           {
             path: '/posts/cate',
             name: 'blog-cate',
-            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/Cate'),
+            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/category/Index'),
             meta: { title: '分类目录', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
             path: '/posts/tags',
             name: 'blog-tags',
-            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/Tags'),
+            component: () => import(/* webpackChunkName: "posts" */ '@/views/posts/tags/Index'),
             meta: { title: '标签', keepAlive: true, permission: [ 'dashboard' ] }
           }
         ]
