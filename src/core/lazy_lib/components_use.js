@@ -48,6 +48,7 @@ import {
   message,
   notification,
   Carousel,
+  Collapse
 } from 'ant-design-vue'
 // import VueCropper from 'vue-cropper'
 
@@ -91,6 +92,7 @@ Vue.use(Popconfirm)
 // Vue.use(VueCropper)
 Vue.use(notification)
 Vue.use(Carousel)
+Vue.use(Collapse)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
