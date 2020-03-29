@@ -1,6 +1,6 @@
 <template>
   <div class="media">
-    <file-uploader />
+    <file-uploader @upload-ok="init" />
 
     <div class="actions" style="margin: 10px; background: #fff; padding: 20px;">
       <template v-if="selsctable">
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { getMediaList } from '@/api/media'
+import { getMediaList, delMediaList } from '@/api/media'
 import CardList from './CardList'
 import FileDetail from './FileDetail'
 import FileUploader from './FileUploader'
@@ -57,9 +57,12 @@ export default {
     }
   },
   created () {
-    this.fetchData()
+    this.init()
   },
   methods: {
+    init () {
+      this.fetchData()
+    },
     async fetchData () {
       const list = await getMediaList()
       console.log('list: ', list)
@@ -86,8 +89,11 @@ export default {
         item.checked = false
       })
     },
-    deleteFile () {
-      console.log('delete')
+    async deleteFile () {
+      const arr = this.list.filter(item => item.checked).map(item => item.id)
+      const resp = await delMediaList(arr)
+      console.log(resp)
+      this.init()
     }
   }
 }

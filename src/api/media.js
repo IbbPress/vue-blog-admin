@@ -8,7 +8,7 @@ import { axios } from '@/utils/request'
 
 export function getMediaList (parameter) {
   return axios({
-    url: '/media/list',
+    url: '/media',
     method: 'get',
     params: parameter
   })
@@ -18,5 +18,15 @@ export function delMedia (id) {
   return axios({
     url: `/media/${id}`,
     method: 'delete'
+  })
+}
+
+export function delMediaList (list) {
+  return axios({
+    url: '/media',
+    method: 'delete',
+    data: {
+      ids: list
+    }
   })
 }
