@@ -4,7 +4,7 @@
       name="file"
       :multiple="true"
       :action="uploadAction"
-      :customRequest="customRequest"
+      :headers="headers"
       @change="handleChange"
     >
       <p class="ant-upload-drag-icon">
@@ -19,22 +19,11 @@
 export default {
   data () {
     return {
-      uploadAction: '/media/upload'
+      uploadAction: '/api/media/upload',
+      headers: {}
     }
   },
   methods: {
-    async customRequest (...args) {
-      const formData = new FormData()
-      formData.append('file', args[0].file, args[0].file.name)
-
-      const resp = await this.$http.post(this.uploadAction, formData, {
-        contentType: false,
-        processData: false,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      })
-      console.log('upload resp:', resp)
-      this.$message.success('上传成功')
-    },
     handleChange (info) {
       const status = info.file.status
       if (status !== 'uploading') {
@@ -42,6 +31,7 @@ export default {
       }
       if (status === 'done') {
         this.$message.success(`${info.file.name} file uploaded successfully.`)
+        this.$emit('upload-ok')
       } else if (status === 'error') {
         this.$message.error(`${info.file.name} file upload failed.`)
       }
