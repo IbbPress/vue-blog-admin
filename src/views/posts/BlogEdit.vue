@@ -22,76 +22,54 @@
               <div style="display: inline-flex;">
                 <a-button type="primary" @click="validateFields">提交</a-button>
                 <a-button style="margin-left: 8px">保存</a-button>
-                <a-button style="margin-left: 8px" icon="fullscreen"></a-button>
+                <a-button
+                  style="margin-left: 8px"
+                  icon="setting"
+                  @click="settingVisible = !settingVisible"
+                  :type="settingVisible ? 'primary' : 'default'"
+                />
               </div>
             </div>
           </a-form-item>
-          <!-- <a-form-item
-            v-bind="formLayout"
-            :extra="extra"
-          >
-            <a-input
-              v-decorator="[
-                'pinged',
-                {
-                  initialValue: formValues.pinged,
-                  rules: [
-                    { required: true, message: '链接' }
-                  ]
-                }
-              ]"
-              placeholder="在此输入标题" />
-          </a-form-item> -->
           <a-form-item style="flex: 1 1 auto;">
-            <mavon-editor
-              ref="editor"
-              v-model="formValues.content"
-              @imgAdd="$imgAdd"
-              @imgDel="$imgDel"
-              style="z-index: 900;"
-            />
+            <a-row :gutter="16">
+              <a-col v-bind="editorLayout">
+                <mavon-editor
+                  ref="editor"
+                  v-model="formValues.content"
+                  @imgAdd="$imgAdd"
+                  @imgDel="$imgDel"
+                  style="z-index: 900;"
+                />
+              </a-col>
+              <a-col v-bind="editorLayout2">
+                <settings
+                  ref="settings"
+                  :formValues="formValues"
+                />
+              </a-col>
+            </a-row>
           </a-form-item>
-          <!-- <a-form-item
-            v-bind="formLayout"
-          >
-            <a-textarea
-              v-decorator="[
-                'summary'
-              ]"
-              placeholder="摘要"
-              :autosize="{ minRows: 2, maxRows: 6 }"
-            />
-          </a-form-item> -->
         </a-form>
       </a-col>
-      <!-- <a-col :span="4">
-        <div>
-          <a-button type="primary" @click="validateFields">提交</a-button>
-          <a-button style="margin-left: 8px">保存</a-button>
-        </div>
-        <br />
-      </a-col> -->
     </a-row>
   </a-card>
 </template>
 
 <script>
-import pinyin from 'pinyin'
+import Settings from './edit/Settings'
 import { createBlog, getBlog, updateBlog } from '@/api/blog'
 import { delMedia } from '@/api/media'
 import { mavonEditor } from 'mavon-editor'
 require('mavon-editor/dist/css/index.css')
 export default {
   name: 'BaseForm',
-  components: { mavonEditor },
+  components: { mavonEditor, Settings },
   data () {
     return {
       id: undefined,
       loading: false,
       description: '写点什么吧',
-      value: 1,
-
-      // form
       form: this.$form.createForm(this),
       formLayout: {
         labelCol: {
@@ -109,13 +87,32 @@ export default {
         pinged: ''
       },
       uploadAction: '/media/upload',
-      fileList: {}
+      fileList: {},
+      settingVisible: false
     }
   },
   computed: {
     extra () {
       const pinged = this.formValues.pinged
       return pinged && `发布后，文本链接是：https://example.com/${pinged}.html`
+    },
+    editorLayout () {
+      const layout1 = {
+        span: 20
+      }
+      const layout2 = {
+        span: 24
+      }
+      return this.settingVisible ? layout1 : layout2
+    },
+    editorLayout2 () {
+      const layout1 = {
+        span: 4
+      }
+      const layout2 = {
+        span: 0
+      }
+      return this.settingVisible ? layout1 : layout2
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -134,7 +131,6 @@ export default {
       this.form.resetFields()
     },
 
-    // handler
     validateFields (e) {
       e.preventDefault()
       this.form.validateFieldsAndScroll((err, values) => {
@@ -153,41 +149,24 @@ export default {
         }))
       })
     },
-    // handler
-    async handleSubmit (values) {
+    async handleSubmit (values = {}) {
+      const payload = Object.assign(values, this.$refs.settings.payload)
+      console.log(payload)
       if (this.id) {
-        await updateBlog(this.id, values)
+        await updateBlog(this.id, payload)
         this.$message.success('更新成功')
       } else {
-        await createBlog(values)
+        await createBlog(payload)
         this.$message.success('保存成功')
       }
       this.$router.push({ name: 'blog-list' })
-      // eslint-disable-next-line no-console
-      // this.id = resp.data.id
-      // const { name } = this.$route
-      // this.$router.push({ name, query: { id: this.id } })
     },
     async fetchPost () {
       const { id } = this.$route.query
       if (!id) { return }
       this.id = id
-      const { data: { title, content, pinged } } = await getBlog(id)
-      Object.assign(this.formValues, {
-        title, content
-      })
-      !pinged && this.transToPinyin(title)
-      // eslint-disable-next-line no-console
-    },
-    onTitleChange (e) {
-      const value = e.target.value
-      this.transToPinyin(value)
-    },
-    transToPinyin (value) {
-      // 标点符号是否要处理
-      this.formValues.pinged = pinyin(value, {
-        style: pinyin.STYLE_NORMAL
-      }).join('-')
+      const { data } = await getBlog(id)
+      this.formValues = Object.assign({}, this.formValues, data)
     },
     // 绑定@imgAdd event
     $imgAdd (pos, $file) {
@@ -207,6 +186,9 @@ export default {
     async $imgDel (filename) {
       const file = this.fileList[filename[0]]
       await delMedia(file.id)
+    },
+    onTitleChange (e) {
+      this.formValues.title = e.target.value
     }
   }
 }
