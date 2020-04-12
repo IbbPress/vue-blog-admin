@@ -5,6 +5,7 @@
       :multiple="true"
       :action="uploadAction"
       :headers="headers"
+      :beforeUpload="beforeUpload"
       @change="handleChange"
     >
       <p class="ant-upload-drag-icon">
@@ -24,6 +25,18 @@ export default {
     }
   },
   methods: {
+    beforeUpload (file) {
+      const isPIC = file.type.includes('image')
+      if (!isPIC) {
+        console.log('文件类型：', file.type)
+        this.$message.error('只能选择图片文件上传')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isLt2M) {
+        this.$message.error('Image must smaller than 2MB!')
+      }
+      return isPIC && isLt2M
+    },
     handleChange (info) {
       const status = info.file.status
       if (status !== 'uploading') {
