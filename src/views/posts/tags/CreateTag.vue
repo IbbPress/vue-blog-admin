@@ -56,6 +56,9 @@ export default {
     async createTag (payload) {
       const resp = await createTag(payload)
       console.log(resp)
+      this.$message.success('添加成功')
+      this.form.resetFields()
+      this.$emit('create')
     }
   }
 }

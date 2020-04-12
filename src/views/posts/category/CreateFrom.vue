@@ -29,7 +29,7 @@
     </a-form-item>
     <a-form-item>
       <a-button type="primary" html-type="submit">
-        添加新标签
+        添加新分类
       </a-button>
     </a-form-item>
   </a-form>
@@ -56,6 +56,9 @@ export default {
     async createCate (payload) {
       const resp = await createCate(payload)
       console.log(resp)
+      this.$message.success('添加成功')
+      this.form.resetFields()
+      this.$emit('create')
     }
   }
 }

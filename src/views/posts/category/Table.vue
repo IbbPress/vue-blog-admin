@@ -85,7 +85,12 @@ export default {
     }
   },
   methods: {
+    refresh () {
+      this.$refs.table.refresh()
+    },
+    onSelectChange () {
 
+    }
   }
 }
 </script>

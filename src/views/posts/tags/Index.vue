@@ -3,12 +3,12 @@
     <a-row :gutter="16">
       <a-col :span="8">
         <a-card :bordered="false">
-          <create-tag />
+          <create-tag @create="onCreate" />
         </a-card>
       </a-col>
       <a-col :span="16">
         <a-card :bordered="false">
-          <tags-table />
+          <tags-table ref="table" />
         </a-card>
       </a-col>
     </a-row>
@@ -30,7 +30,9 @@ export default {
     }
   },
   methods: {
-
+    onCreate () {
+      this.$refs.table.refresh()
+    }
   }
 }
 </script>
